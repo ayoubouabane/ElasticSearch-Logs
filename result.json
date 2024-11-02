@@ -1,0 +1,174 @@
+// 3- Indexer des Logs
+{
+    "_index": "logs",
+    "_id": "3",
+    "_version": 1,
+    "result": "created",
+    "_shards": {
+            "total": 2,
+            "successful": 1,
+            "failed": 0
+    },
+    "_seq_no": 1,
+    "_primary_term": 1
+},
+// 4- Rechercher des logs par niveau de log :
+{
+    "took": 3,
+    "timed_out": false,
+    "_shards": {
+        "total": 3,
+        "successful": 3,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 1,
+            "relation": "eq"
+        },
+        "max_score": 0.2876821,
+        "hits": [
+            {
+                "_index": "logs",
+                "_id": "1",
+                "_score": 0.2876821,
+                "_source": {
+                    "timestamp": "2024-07-04T12:00:00Z",
+                    "log_level": "ERROR",
+                    "message": "An unexpected error occurred in the application."
+                }
+            }
+        ]
+    }
+},
+// 5- Agregations
+{
+    "took": 32,
+    "timed_out": false,
+    "_shards": {
+        "total": 3,
+        "successful": 3,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 2,
+            "relation": "eq"
+        },
+        "max_score": null,
+        "hits": []
+    },
+    "aggregations": {
+        "logs_over_time": {
+            "buckets": [
+                {
+                    "key_as_string": "2024-07-04T12:00:00.000Z",
+                    "key": 1720094400000,
+                    "doc_count": 2
+                }
+            ]
+        }
+    }
+},
+// 6. Fréquence des Niveaux de Log : Compter le nombre de logs par niveau de log.
+{
+    "took": 17,
+    "timed_out": false,
+    "_shards": {
+        "total": 3,
+        "successful": 3,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 2,
+            "relation": "eq"
+        },
+        "max_score": null,
+        "hits": []
+    },
+    "aggregations": {
+        "log_levels": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+                {
+                    "key": "ERROR",
+                    "doc_count": 1
+                },
+                {
+                    "key": "INFO",
+                    "doc_count": 1
+                }
+            ]
+        }
+    }
+}
+//7. Statistiques sur la Longueur des Messages : Calculer les statistiques sur la longueur des messages de logs.
+{
+    "took": 74,
+    "timed_out": false,
+    "_shards": {
+        "total": 3,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 2,
+        "failures": [
+            {
+                "shard": 1,
+                "index": "logs",
+                "node": "GAD_kWeIQn2MDHEi20_56w",
+                "reason": {
+                    "type": "script_exception",
+                    "reason": "runtime error",
+                    "script_stack": [
+                        "org.elasticsearch.server@8.14.2/org.elasticsearch.index.mapper.TextFieldMapper$TextFieldType.fielddataBuilder(TextFieldMapper.java:1035)",
+                        "org.elasticsearch.server@8.14.2/org.elasticsearch.index.fielddata.IndexFieldDataService.getForField(IndexFieldDataService.java:94)",
+                        "org.elasticsearch.server@8.14.2/org.elasticsearch.index.IndexService.loadFielddata(IndexService.java:1306)",
+                        "org.elasticsearch.server@8.14.2/org.elasticsearch.index.query.SearchExecutionContext.lambda$setLookupProviders$2(SearchExecutionContext.java:506)",
+                        "org.elasticsearch.server@8.14.2/org.elasticsearch.search.lookup.SearchLookup.getForField(SearchLookup.java:139)",
+                        "org.elasticsearch.server@8.14.2/org.elasticsearch.search.lookup.LeafDocLookup.lambda$getFactoryForDoc$1(LeafDocLookup.java:169)",
+                        "java.base/java.security.AccessController.doPrivileged(AccessController.java:319)",
+                        "org.elasticsearch.server@8.14.2/org.elasticsearch.search.lookup.LeafDocLookup.getFactoryForDoc(LeafDocLookup.java:150)",
+                        "org.elasticsearch.server@8.14.2/org.elasticsearch.search.lookup.LeafDocLookup.get(LeafDocLookup.java:185)",
+                        "org.elasticsearch.server@8.14.2/org.elasticsearch.search.lookup.LeafDocLookup.get(LeafDocLookup.java:32)",
+                        "doc['message'].value.length()",
+                        "    ^---- HERE"
+                    ],
+                    "script": "doc['message'].value.length()",
+                    "lang": "painless",
+                    "position": {
+                        "offset": 4,
+                        "start": 0,
+                        "end": 29
+                    },
+                    "caused_by": {
+                        "type": "illegal_argument_exception",
+                        "reason": "Fielddata is disabled on [message] in [logs]. Text fields are not optimised for operations that require per-document field data like aggregations and sorting, so these operations are disabled by default. Please use a keyword field instead. Alternatively, set fielddata=true on [message] in order to load field data by uninverting the inverted index. Note that this can use significant memory."
+                    }
+                }
+            }
+        ]
+    },
+    "hits": {
+        "total": {
+            "value": 0,
+            "relation": "eq"
+        },
+        "max_score": null,
+        "hits": []
+    },
+    "aggregations": {
+        "message_length_stats": {
+            "count": 0,
+            "min": null,
+            "max": null,
+            "avg": null,
+            "sum": 0.0
+        }
+    }
+}
+}
